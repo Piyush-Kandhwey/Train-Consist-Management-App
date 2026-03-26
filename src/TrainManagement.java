@@ -1,59 +1,58 @@
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
+// 1. CUSTOM EXCEPTION: Define a specific error for the Railway Domain
+class InvalidCapacityException extends Exception {
+    public InvalidCapacityException(String message) {
+        super(message);
+    }
+}
 
-class Bogie {
+// 2. DOMAIN OBJECT: PassengerBogie with built-in validation
+class PassengerBogie {
     String type;
     int capacity;
 
-    Bogie(String type, int capacity) {
+    // The constructor "throws" the exception if validation fails
+    public PassengerBogie(String type, int capacity) throws InvalidCapacityException {
+        if (capacity <= 0) {
+            throw new InvalidCapacityException("Invalid Capacity: " + capacity +
+                    ". Capacity must be greater than zero for " + type + ".");
+        }
         this.type = type;
         this.capacity = capacity;
+    }
+
+    @Override
+    public String toString() {
+        return type + " (Seats: " + capacity + ")";
     }
 }
 
 public class TrainManagement {
     public static void main(String[] args) {
-        // 1. SETUP: Creating a larger dataset for meaningful measurement
-        List<Bogie> trainConsist = new ArrayList<>();
-        for (int i = 0; i < 10000; i++) {
-            trainConsist.add(new Bogie("Sleeper", 72));
-            trainConsist.add(new Bogie("AC", 56));
+        System.out.println("--- Railway Data Integrity System ---");
+
+        // 3. TRY-CATCH: Handling the creation process safely
+        try {
+            System.out.println("Action: Attempting to add a valid Sleeper bogie...");
+            PassengerBogie s1 = new PassengerBogie("Sleeper", 72);
+            System.out.println("Success: Added " + s1);
+
+            System.out.println("\nAction: Attempting to add an invalid AC bogie (0 capacity)...");
+            // This line will trigger the exception and jump to the catch block
+            PassengerBogie b1 = new PassengerBogie("AC Chair Car", 0);
+            System.out.println("This line will never execute.");
+
+        } catch (InvalidCapacityException e) {
+            // 4. ERROR HANDLING: Gracefully reporting the business rule violation
+            System.err.println("ALERT: " + e.getMessage());
         }
 
-        System.out.println("--- Railway System Performance Lab ---");
-        System.out.println("Dataset Size: " + trainConsist.size() + " Bogies");
-
-        // 2. BENCHMARK: Traditional Loop Approach
-        long startTimeLoop = System.nanoTime();
-        List<Bogie> filteredLoop = new ArrayList<>();
-        for (Bogie b : trainConsist) {
-            if (b.capacity > 60) {
-                filteredLoop.add(b);
-            }
-        }
-        long endTimeLoop = System.nanoTime();
-        long durationLoop = endTimeLoop - startTimeLoop;
-
-        // 3. BENCHMARK: Java Stream Approach
-        long startTimeStream = System.nanoTime();
-        List<Bogie> filteredStream = trainConsist.stream()
-                .filter(b -> b.capacity > 60)
-                .collect(Collectors.toList());
-        long endTimeStream = System.nanoTime();
-        long durationStream = endTimeStream - startTimeStream;
-
-        // 4. DISPLAY: Results and Comparison
-        System.out.println("\n--- Performance Metrics ---");
-        System.out.println("Loop Execution Time   : " + durationLoop + " ns");
-        System.out.println("Stream Execution Time : " + durationStream + " ns");
-
-        // Logic check: Ensure both results are identical
-        if (filteredLoop.size() == filteredStream.size()) {
-            System.out.println("\nIntegrity: Both methods produced " + filteredLoop.size() + " results.");
+        try {
+            System.out.println("\nAction: Attempting to add a bogie with negative capacity...");
+            PassengerBogie f1 = new PassengerBogie("First Class", -5);
+        } catch (InvalidCapacityException e) {
+            System.err.println("ALERT: " + e.getMessage());
         }
 
-        System.out.println("\nInsight: While Streams offer cleaner syntax, Loops often " +
-                "provide lower overhead for simple filtering tasks.");
+        System.out.println("\nStatus: System remained stable despite invalid input attempts.");
     }
 }
