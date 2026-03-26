@@ -1,47 +1,53 @@
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.ArrayList;
+import java.util.List;
+
+class GoodsBogie {
+    String type;
+    String cargo;
+
+    GoodsBogie(String type, String cargo) {
+        this.type = type;
+        this.cargo = cargo;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("[%s : %s]", type, cargo);
+    }
+}
 
 public class TrainManagement {
     public static void main(String[] args) {
-        System.out.println("--- Railway Security & Validation System ---");
+        // 1. DATA SETUP: Creating a list of goods bogies
+        List<GoodsBogie> goodsConsist = new ArrayList<>();
+        goodsConsist.add(new GoodsBogie("Rectangular", "Coal"));
+        goodsConsist.add(new GoodsBogie("Cylindrical", "Petroleum"));
+        goodsConsist.add(new GoodsBogie("Rectangular", "Grain"));
 
-        // 1. DEFINE PATTERNS
-        // Train ID: Starts with 'TRN-', followed by exactly 4 digits
-        String trainIdRegex = "TRN-\\d{4}";
+        // Simulating a safety violation: Cylindrical carrying Coal
+        // goodsConsist.add(new GoodsBogie("Cylindrical", "Coal"));
 
-        // Cargo Code: Starts with 'PET-', followed by exactly 2 uppercase letters
-        String cargoCodeRegex = "PET-[A-Z]{2}";
+        System.out.println("--- Railway Safety Compliance Engine ---");
+        System.out.println("Inspecting Consist: " + goodsConsist);
 
-        // 2. COMPILE PATTERNS
-        Pattern trainIdPattern = Pattern.compile(trainIdRegex);
-        Pattern cargoCodePattern = Pattern.compile(cargoCodeRegex);
-
-        // 3. TEST DATA
-        String[] testTrainIds = {"TRN-1234", "TRAIN12", "TRN-123", "TRN-99999"};
-        String[] testCargoCodes = {"PET-AB", "PET-ab", "PET123", "PET-XYZ"};
-
-        // 4. VALIDATE TRAIN IDs
-        System.out.println("\n[Validating Train IDs]");
-        for (String id : testTrainIds) {
-            Matcher matcher = trainIdPattern.matcher(id);
-            if (matcher.matches()) {
-                System.out.println("✔ " + id + " : VALID Format");
-            } else {
-                System.out.println("❌ " + id + " : INVALID (Expected TRN-XXXX)");
+        // 2. STREAM VALIDATION: Enforcing Safety Rules
+        // Rule: IF type is Cylindrical, THEN cargo MUST be Petroleum.
+        boolean isSafe = goodsConsist.stream().allMatch(bogie -> {
+            if (bogie.type.equalsIgnoreCase("Cylindrical")) {
+                return bogie.cargo.equalsIgnoreCase("Petroleum");
             }
+            return true; // Non-cylindrical bogies are safe by default in this rule
+        });
+
+        // 3. DISPLAY: Final Safety Status
+        System.out.println("\nAction: Running Safety Protocol...");
+        if (isSafe) {
+            System.out.println("Result: [PASS] Train is safety compliant. Ready for departure.");
+        } else {
+            System.out.println("Result: [FAIL] SAFETY ALERT! Cylindrical bogies must only carry Petroleum.");
+            System.out.println("Action: Train movement halted for cargo reassignment.");
         }
 
-        // 5. VALIDATE CARGO CODES
-        System.out.println("\n[Validating Cargo Codes]");
-        for (String code : testCargoCodes) {
-            Matcher matcher = cargoCodePattern.matcher(code);
-            if (matcher.matches()) {
-                System.out.println("✔ " + code + " : VALID Format");
-            } else {
-                System.out.println("❌ " + code + " : INVALID (Expected PET-XX)");
-            }
-        }
-
-        System.out.println("\nStatus: Validation process completed.");
+        System.out.println("\n--- End of Safety Report ---");
     }
 }
