@@ -1,9 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
-// Reusing the Bogie class structure
 class Bogie {
     String type;
     int capacity;
@@ -12,42 +9,41 @@ class Bogie {
         this.type = type;
         this.capacity = capacity;
     }
-
-    @Override
-    public String toString() {
-        return "[Capacity: " + capacity + "]";
-    }
 }
 
-public class TrainGroupingManager {
+public class TrainManagement {
     public static void main(String[] args) {
-        // 1. DATA SETUP: Creating a list with multiple bogies of the same type
+        // 1. DATA SETUP: Defining the train consist
         List<Bogie> trainConsist = new ArrayList<>();
         trainConsist.add(new Bogie("Sleeper", 72));
         trainConsist.add(new Bogie("Sleeper", 72));
         trainConsist.add(new Bogie("AC Chair Car", 56));
         trainConsist.add(new Bogie("First Class", 24));
-        trainConsist.add(new Bogie("AC Chair Car", 56));
+        trainConsist.add(new Bogie("General", 90));
 
-        System.out.println("--- Railway Inventory Grouping System ---");
-        System.out.println("Processing " + trainConsist.size() + " bogies into categories...");
+        System.out.println("--- Railway Capacity Analytics Dashboard ---");
+        System.out.println("Analyzing " + trainConsist.size() + " bogies...");
 
-        // 2. STREAM PIPELINE: Grouping by Bogie Type
-        // The classifier function (Bogie::type) determines the Map keys
-        Map<String, List<Bogie>> groupedBogies = trainConsist.stream()
-                .collect(Collectors.groupingBy(b -> b.type));
+        // 2. STREAM PIPELINE: Map and Reduce
+        // .map(b -> b.capacity) transforms Bogie objects into a stream of Integers
+        // .reduce(0, Integer::sum) starts at 0 and adds every capacity to the running total
+        int totalSeats = trainConsist.stream()
+                .map(b -> b.capacity)
+                .reduce(0, Integer::sum);
 
-        // 3. DISPLAY: Iterating through the Map to show structured results
-        System.out.println("\n--- Categorized Train Report ---");
-        groupedBogies.forEach((type, list) -> {
-            System.out.println("Category: " + type);
-            System.out.println("Count: " + list.size());
-            System.out.println("Details: " + list);
-            System.out.println("---------------------------------");
-        });
+        // 3. DISPLAY: Showing the aggregated metric
+        System.out.println("\n--- Operational Summary ---");
+        System.out.println("Total Passenger Capacity: " + totalSeats + " seats");
 
-        // 4. INTEGRITY CHECK
-        System.out.println("Total Categories Identified: " + groupedBogies.size());
-        System.out.println("Status: Flat list successfully transformed into structured Map.");
+        // 4. BUSINESS LOGIC: Simple validation/insight
+        if (totalSeats > 300) {
+            System.out.println("Classification: High-Capacity Express Train");
+        } else {
+            System.out.println("Classification: Short-Distance Commuter Train");
+        }
+
+        // 5. INTEGRITY CHECK
+        System.out.println("\nIntegrity Check: Original consist of " + trainConsist.size() + " bogies remains unchanged.");
+        System.out.println("Status: Analytic computation successful.");
     }
 }
