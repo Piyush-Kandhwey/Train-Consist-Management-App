@@ -1,39 +1,42 @@
-import java.util.HashSet;
-import java.util.Set;
+import java.util.LinkedList;
 
 public class TrainManagement {
     public static void main(String[] args) {
-        // Create a HashSet to store unique Bogie IDs
-        // HashSet ensures no duplicate IDs can exist in the system
-        Set<String> bogieIds = new HashSet<>();
+        // Create a LinkedList to model the physical chain of the train
+        LinkedList<String> trainConsist = new LinkedList<>();
 
-        System.out.println("--- Railway ID Registration System ---");
+        System.out.println("--- Railway Physical Chaining System ---");
 
-        // 1. ADD: Registering bogies with unique IDs
-        bogieIds.add("BG101");
-        bogieIds.add("BG102");
-        bogieIds.add("BG103");
+        // 1. ADD: Building the basic train structure
+        trainConsist.add("Sleeper (S1)");
+        trainConsist.add("AC Coach (B1)");
+        trainConsist.add("General Coach (G1)");
 
-        System.out.println("Status: Initial bogies registered.");
-        System.out.println("Registered IDs: " + bogieIds);
-S
-        // 2. DUPLICATE ATTEMPT: Trying to add an existing ID (Simulating an error)
-        System.out.println("\nAction: Attempting to register duplicate ID 'BG101'...");
-        boolean isAdded = bogieIds.add("BG101");
+        // 2. addFirst / addLast: Positioning the Engine and Guard
+        trainConsist.addFirst("Locomotive (WAP-7)");
+        trainConsist.addLast("Guard Coach");
 
-        if (!isAdded) {
-            System.out.println("Alert: Bogie ID 'BG101' already exists! Duplicate rejected.");
+        System.out.println("Status: Initial train assembled.");
+        System.out.println("Current Sequence: " + trainConsist);
+
+        // 3. INSERTION: Adding a Pantry Car at a specific position (Index 2)
+        System.out.println("\nAction: Inserting Pantry Car at position 2...");
+        trainConsist.add(2, "Pantry Car");
+
+        // 4. REMOVAL: Detaching from head and tail
+        System.out.println("Action: Detaching Locomotive and Guard Coach for maintenance...");
+        trainConsist.removeFirst();
+        trainConsist.removeLast();
+
+        // 5. DISPLAY: Final ordered state
+        System.out.println("\n--- Final Ordered Consist ---");
+        System.out.println("Total Bogies: " + trainConsist.size());
+
+        // Iterating to show the chain
+        for (int i = 0; i < trainConsist.size(); i++) {
+            System.out.print("[" + trainConsist.get(i) + "]");
+            if (i < trainConsist.size() - 1) System.out.print(" <-> ");
         }
-
-        // 3. ADD: Adding another unique ID
-        bogieIds.add("BG104");
-
-        // 4. DISPLAY: Final unique set
-        System.out.println("\n--- Final Unique Bogie Inventory ---");
-        System.out.println("Total Unique Bogies: " + bogieIds.size());
-        System.out.println("Inventory List: " + bogieIds);
-
-        System.out.println("\nNote: Notice that the order may differ from insertion order " +
-                "as HashSet does not guarantee sequence.");
+        System.out.println("\n\nNote: LinkedList effectively models the 'Coupler' system of a real train.");
     }
 }
