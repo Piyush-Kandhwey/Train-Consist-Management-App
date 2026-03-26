@@ -1,56 +1,53 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
-// Reusing the Bogie class concept from UC7
+// Reusing the Bogie class structure
 class Bogie {
-    String name;
+    String type;
     int capacity;
 
-    Bogie(String name, int capacity) {
-        this.name = name;
+    Bogie(String type, int capacity) {
+        this.type = type;
         this.capacity = capacity;
     }
 
     @Override
     public String toString() {
-        return String.format("%-15s | Capacity: %d seats", name, capacity);
+        return "[Capacity: " + capacity + "]";
     }
 }
 
-public class TrainManagement {
+public class TrainGroupingManager {
     public static void main(String[] args) {
-        // 1. DATA SETUP: Creating the master list of bogies
-        List<Bogie> allBogies = new ArrayList<>();
-        allBogies.add(new Bogie("Sleeper", 72));
-        allBogies.add(new Bogie("AC Chair Car", 56));
-        allBogies.add(new Bogie("First Class", 24));
-        allBogies.add(new Bogie("General", 90));
+        // 1. DATA SETUP: Creating a list with multiple bogies of the same type
+        List<Bogie> trainConsist = new ArrayList<>();
+        trainConsist.add(new Bogie("Sleeper", 72));
+        trainConsist.add(new Bogie("Sleeper", 72));
+        trainConsist.add(new Bogie("AC Chair Car", 56));
+        trainConsist.add(new Bogie("First Class", 24));
+        trainConsist.add(new Bogie("AC Chair Car", 56));
 
-        System.out.println("--- Railway Intelligence & Filtering ---");
-        System.out.println("Total Bogies in System: " + allBogies.size());
+        System.out.println("--- Railway Inventory Grouping System ---");
+        System.out.println("Processing " + trainConsist.size() + " bogies into categories...");
 
-        // 2. STREAM PIPELINE: Filtering for high-capacity bogies (> 60)
-        // .stream() -> starts the pipeline
-        // .filter() -> applies the business rule (Lambda)
-        // .collect() -> bundles the result into a new list
-        int threshold = 60;
-        List<Bogie> highCapacityBogies = allBogies.stream()
-                .filter(b -> b.capacity > threshold)
-                .collect(Collectors.toList());
+        // 2. STREAM PIPELINE: Grouping by Bogie Type
+        // The classifier function (Bogie::type) determines the Map keys
+        Map<String, List<Bogie>> groupedBogies = trainConsist.stream()
+                .collect(Collectors.groupingBy(b -> b.type));
 
-        // 3. DISPLAY: Showing filtered results
-        System.out.println("\nAction: Filtering bogies with capacity > " + threshold + "...");
+        // 3. DISPLAY: Iterating through the Map to show structured results
+        System.out.println("\n--- Categorized Train Report ---");
+        groupedBogies.forEach((type, list) -> {
+            System.out.println("Category: " + type);
+            System.out.println("Count: " + list.size());
+            System.out.println("Details: " + list);
+            System.out.println("---------------------------------");
+        });
 
-        if (highCapacityBogies.isEmpty()) {
-            System.out.println("Result: No bogies match the criteria.");
-        } else {
-            System.out.println("Filtered Results:");
-            highCapacityBogies.forEach(System.out::println);
-        }
-
-        // 4. INTEGRITY CHECK: Verifying the original list is untouched
-        System.out.println("\nIntegrity Check: Original list size remains " + allBogies.size());
-        System.out.println("Status: Stream processing completed successfully.");
+        // 4. INTEGRITY CHECK
+        System.out.println("Total Categories Identified: " + groupedBogies.size());
+        System.out.println("Status: Flat list successfully transformed into structured Map.");
     }
 }
