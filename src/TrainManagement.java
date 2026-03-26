@@ -1,40 +1,39 @@
-import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 public class TrainManagement {
     public static void main(String[] args) {
-        // Create an ArrayList to store passenger bogies dynamically
-        ArrayList<String> passengerBogies = new ArrayList<>();
+        // Create a HashSet to store unique Bogie IDs
+        // HashSet ensures no duplicate IDs can exist in the system
+        Set<String> bogieIds = new HashSet<>();
 
-        System.out.println("--- Railway Consist Management System ---");
+        System.out.println("--- Railway ID Registration System ---");
 
-        // 1. ADD: Attaching bogies to the engine
-        passengerBogies.add("Sleeper");
-        passengerBogies.add("AC Chair Car");
-        passengerBogies.add("First Class");
+        // 1. ADD: Registering bogies with unique IDs
+        bogieIds.add("BG101");
+        bogieIds.add("BG102");
+        bogieIds.add("BG103");
 
-        System.out.println("Status: Bogies added successfully.");
-        System.out.println("Current Consist: " + passengerBogies);
+        System.out.println("Status: Initial bogies registered.");
+        System.out.println("Registered IDs: " + bogieIds);
+S
+        // 2. DUPLICATE ATTEMPT: Trying to add an existing ID (Simulating an error)
+        System.out.println("\nAction: Attempting to register duplicate ID 'BG101'...");
+        boolean isAdded = bogieIds.add("BG101");
 
-        // 2. REMOVE: Detaching a bogie (e.g., for maintenance or route change)
-        String bogieToRemove = "AC Chair Car";
-        passengerBogies.remove(bogieToRemove);
-
-        System.out.println("\nAction: Detaching " + bogieToRemove + "...");
-        System.out.println("Updated Consist: " + passengerBogies);
-
-        // 3. CONTAINS: Checking for a specific bogie type
-        String searchBogie = "Sleeper";
-        System.out.println("\nVerification: Checking for " + searchBogie + " bogie...");
-
-        if (passengerBogies.contains(searchBogie)) {
-            System.out.println("Result: " + searchBogie + " is present in the train.");
-        } else {
-            System.out.println("Result: " + searchBogie + " not found.");
+        if (!isAdded) {
+            System.out.println("Alert: Bogie ID 'BG101' already exists! Duplicate rejected.");
         }
 
-        // 4. READ: Final state and size
-        System.out.println("\n--- Final Train Summary ---");
-        System.out.println("Total Bogies: " + passengerBogies.size());
-        System.out.println("Final Composition: " + passengerBogies);
+        // 3. ADD: Adding another unique ID
+        bogieIds.add("BG104");
+
+        // 4. DISPLAY: Final unique set
+        System.out.println("\n--- Final Unique Bogie Inventory ---");
+        System.out.println("Total Unique Bogies: " + bogieIds.size());
+        System.out.println("Inventory List: " + bogieIds);
+
+        System.out.println("\nNote: Notice that the order may differ from insertion order " +
+                "as HashSet does not guarantee sequence.");
     }
 }
