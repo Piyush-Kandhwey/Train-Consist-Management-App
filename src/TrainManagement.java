@@ -1,49 +1,47 @@
-import java.util.ArrayList;
-import java.util.List;
-
-class Bogie {
-    String type;
-    int capacity;
-
-    Bogie(String type, int capacity) {
-        this.type = type;
-        this.capacity = capacity;
-    }
-}
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class TrainManagement {
     public static void main(String[] args) {
-        // 1. DATA SETUP: Defining the train consist
-        List<Bogie> trainConsist = new ArrayList<>();
-        trainConsist.add(new Bogie("Sleeper", 72));
-        trainConsist.add(new Bogie("Sleeper", 72));
-        trainConsist.add(new Bogie("AC Chair Car", 56));
-        trainConsist.add(new Bogie("First Class", 24));
-        trainConsist.add(new Bogie("General", 90));
+        System.out.println("--- Railway Security & Validation System ---");
 
-        System.out.println("--- Railway Capacity Analytics Dashboard ---");
-        System.out.println("Analyzing " + trainConsist.size() + " bogies...");
+        // 1. DEFINE PATTERNS
+        // Train ID: Starts with 'TRN-', followed by exactly 4 digits
+        String trainIdRegex = "TRN-\\d{4}";
 
-        // 2. STREAM PIPELINE: Map and Reduce
-        // .map(b -> b.capacity) transforms Bogie objects into a stream of Integers
-        // .reduce(0, Integer::sum) starts at 0 and adds every capacity to the running total
-        int totalSeats = trainConsist.stream()
-                .map(b -> b.capacity)
-                .reduce(0, Integer::sum);
+        // Cargo Code: Starts with 'PET-', followed by exactly 2 uppercase letters
+        String cargoCodeRegex = "PET-[A-Z]{2}";
 
-        // 3. DISPLAY: Showing the aggregated metric
-        System.out.println("\n--- Operational Summary ---");
-        System.out.println("Total Passenger Capacity: " + totalSeats + " seats");
+        // 2. COMPILE PATTERNS
+        Pattern trainIdPattern = Pattern.compile(trainIdRegex);
+        Pattern cargoCodePattern = Pattern.compile(cargoCodeRegex);
 
-        // 4. BUSINESS LOGIC: Simple validation/insight
-        if (totalSeats > 300) {
-            System.out.println("Classification: High-Capacity Express Train");
-        } else {
-            System.out.println("Classification: Short-Distance Commuter Train");
+        // 3. TEST DATA
+        String[] testTrainIds = {"TRN-1234", "TRAIN12", "TRN-123", "TRN-99999"};
+        String[] testCargoCodes = {"PET-AB", "PET-ab", "PET123", "PET-XYZ"};
+
+        // 4. VALIDATE TRAIN IDs
+        System.out.println("\n[Validating Train IDs]");
+        for (String id : testTrainIds) {
+            Matcher matcher = trainIdPattern.matcher(id);
+            if (matcher.matches()) {
+                System.out.println("✔ " + id + " : VALID Format");
+            } else {
+                System.out.println("❌ " + id + " : INVALID (Expected TRN-XXXX)");
+            }
         }
 
-        // 5. INTEGRITY CHECK
-        System.out.println("\nIntegrity Check: Original consist of " + trainConsist.size() + " bogies remains unchanged.");
-        System.out.println("Status: Analytic computation successful.");
+        // 5. VALIDATE CARGO CODES
+        System.out.println("\n[Validating Cargo Codes]");
+        for (String code : testCargoCodes) {
+            Matcher matcher = cargoCodePattern.matcher(code);
+            if (matcher.matches()) {
+                System.out.println("✔ " + code + " : VALID Format");
+            } else {
+                System.out.println("❌ " + code + " : INVALID (Expected PET-XX)");
+            }
+        }
+
+        System.out.println("\nStatus: Validation process completed.");
     }
 }
