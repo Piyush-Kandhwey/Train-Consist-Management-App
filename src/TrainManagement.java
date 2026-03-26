@@ -1,53 +1,59 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
-class GoodsBogie {
+class Bogie {
     String type;
-    String cargo;
+    int capacity;
 
-    GoodsBogie(String type, String cargo) {
+    Bogie(String type, int capacity) {
         this.type = type;
-        this.cargo = cargo;
-    }
-
-    @Override
-    public String toString() {
-        return String.format("[%s : %s]", type, cargo);
+        this.capacity = capacity;
     }
 }
 
 public class TrainManagement {
     public static void main(String[] args) {
-        // 1. DATA SETUP: Creating a list of goods bogies
-        List<GoodsBogie> goodsConsist = new ArrayList<>();
-        goodsConsist.add(new GoodsBogie("Rectangular", "Coal"));
-        goodsConsist.add(new GoodsBogie("Cylindrical", "Petroleum"));
-        goodsConsist.add(new GoodsBogie("Rectangular", "Grain"));
-
-        // Simulating a safety violation: Cylindrical carrying Coal
-        // goodsConsist.add(new GoodsBogie("Cylindrical", "Coal"));
-
-        System.out.println("--- Railway Safety Compliance Engine ---");
-        System.out.println("Inspecting Consist: " + goodsConsist);
-
-        // 2. STREAM VALIDATION: Enforcing Safety Rules
-        // Rule: IF type is Cylindrical, THEN cargo MUST be Petroleum.
-        boolean isSafe = goodsConsist.stream().allMatch(bogie -> {
-            if (bogie.type.equalsIgnoreCase("Cylindrical")) {
-                return bogie.cargo.equalsIgnoreCase("Petroleum");
-            }
-            return true; // Non-cylindrical bogies are safe by default in this rule
-        });
-
-        // 3. DISPLAY: Final Safety Status
-        System.out.println("\nAction: Running Safety Protocol...");
-        if (isSafe) {
-            System.out.println("Result: [PASS] Train is safety compliant. Ready for departure.");
-        } else {
-            System.out.println("Result: [FAIL] SAFETY ALERT! Cylindrical bogies must only carry Petroleum.");
-            System.out.println("Action: Train movement halted for cargo reassignment.");
+        // 1. SETUP: Creating a larger dataset for meaningful measurement
+        List<Bogie> trainConsist = new ArrayList<>();
+        for (int i = 0; i < 10000; i++) {
+            trainConsist.add(new Bogie("Sleeper", 72));
+            trainConsist.add(new Bogie("AC", 56));
         }
 
-        System.out.println("\n--- End of Safety Report ---");
+        System.out.println("--- Railway System Performance Lab ---");
+        System.out.println("Dataset Size: " + trainConsist.size() + " Bogies");
+
+        // 2. BENCHMARK: Traditional Loop Approach
+        long startTimeLoop = System.nanoTime();
+        List<Bogie> filteredLoop = new ArrayList<>();
+        for (Bogie b : trainConsist) {
+            if (b.capacity > 60) {
+                filteredLoop.add(b);
+            }
+        }
+        long endTimeLoop = System.nanoTime();
+        long durationLoop = endTimeLoop - startTimeLoop;
+
+        // 3. BENCHMARK: Java Stream Approach
+        long startTimeStream = System.nanoTime();
+        List<Bogie> filteredStream = trainConsist.stream()
+                .filter(b -> b.capacity > 60)
+                .collect(Collectors.toList());
+        long endTimeStream = System.nanoTime();
+        long durationStream = endTimeStream - startTimeStream;
+
+        // 4. DISPLAY: Results and Comparison
+        System.out.println("\n--- Performance Metrics ---");
+        System.out.println("Loop Execution Time   : " + durationLoop + " ns");
+        System.out.println("Stream Execution Time : " + durationStream + " ns");
+
+        // Logic check: Ensure both results are identical
+        if (filteredLoop.size() == filteredStream.size()) {
+            System.out.println("\nIntegrity: Both methods produced " + filteredLoop.size() + " results.");
+        }
+
+        System.out.println("\nInsight: While Streams offer cleaner syntax, Loops often " +
+                "provide lower overhead for simple filtering tasks.");
     }
 }
