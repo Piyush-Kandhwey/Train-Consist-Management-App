@@ -1,37 +1,50 @@
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
+
+// Defining a custom Bogie class to hold multiple attributes
+class Bogie {
+    String name;
+    int capacity;
+
+    Bogie(String name, int capacity) {
+        this.name = name;
+        this.capacity = capacity;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%-15s | Capacity: %d seats", name, capacity);
+    }
+}
 
 public class TrainManagement {
     public static void main(String[] args) {
-        // Create a HashMap to store Bogie Name as the Key and Capacity as the Value
-        HashMap<String, Integer> bogieCapacityMap = new HashMap<>();
+        // 1. LIST: Creating a list to store custom Bogie objects
+        List<Bogie> passengerBogies = new ArrayList<>();
 
-        System.out.println("--- Railway Operational Mapping System ---");
+        System.out.println("--- Railway Capacity Planning System ---");
 
-        // 1. PUT: Mapping bogie types to their specific capacities
-        bogieCapacityMap.put("Sleeper", 72);
-        bogieCapacityMap.put("AC Chair Car", 56);
-        bogieCapacityMap.put("First Class", 24);
-        bogieCapacityMap.put("General", 90);
+        // 2. ADD: Populating the list with different coach types
+        passengerBogies.add(new Bogie("Sleeper", 72));
+        passengerBogies.add(new Bogie("AC Chair Car", 56));
+        passengerBogies.add(new Bogie("First Class", 24));
+        passengerBogies.add(new Bogie("General", 90));
 
-        System.out.println("Status: Bogie-Capacity pairs registered successfully.");
+        System.out.println("Status: Bogies registered for analysis.");
+        System.out.println("\nUnsorted Consist:");
+        passengerBogies.forEach(System.out::println);
 
-        // 2. ENTRYSET ITERATION: Displaying all mapped data
-        System.out.println("\nListing All Bogie Capacities:");
-        System.out.println("----------------------------------");
+        // 3. COMPARATOR: Defining custom sorting logic (Descending Order: High to Low)
+        // We use a Lambda expression for concise comparison logic
+        passengerBogies.sort((b1, b2) -> Integer.compare(b2.capacity, b1.capacity));
 
-        // Iterating through the map using entrySet() for efficient access
-        for (Map.Entry<String, Integer> entry : bogieCapacityMap.entrySet()) {
-            System.out.println("Bogie Type: " + entry.getKey() + " | Seat Capacity: " + entry.getValue());
+        // 4. DISPLAY: Showing the results after sorting
+        System.out.println("\nSorted Consist (Highest to Lowest Capacity):");
+        System.out.println("---------------------------------------------");
+        for (Bogie b : passengerBogies) {
+            System.out.println(b);
         }
 
-        // 3. FAST LOOKUP: Retrieving a specific value using a key
-        String searchKey = "Sleeper";
-        if (bogieCapacityMap.containsKey(searchKey)) {
-            int capacity = bogieCapacityMap.get(searchKey);
-            System.out.println("\nQuery Result: The capacity of '" + searchKey + "' is " + capacity + " seats.");
-        }
-
-        System.out.println("\n--- Operational Mapping Complete ---");
+        System.out.println("\nNote: Sorting helps administrators prioritize high-capacity coaches.");
     }
 }
