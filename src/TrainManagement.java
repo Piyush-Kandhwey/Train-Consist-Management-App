@@ -1,58 +1,42 @@
-// 1. CUSTOM EXCEPTION: Define a specific error for the Railway Domain
-class InvalidCapacityException extends Exception {
-    public InvalidCapacityException(String message) {
-        super(message);
-    }
-}
-
-// 2. DOMAIN OBJECT: PassengerBogie with built-in validation
-class PassengerBogie {
-    String type;
-    int capacity;
-
-    // The constructor "throws" the exception if validation fails
-    public PassengerBogie(String type, int capacity) throws InvalidCapacityException {
-        if (capacity <= 0) {
-            throw new InvalidCapacityException("Invalid Capacity: " + capacity +
-                    ". Capacity must be greater than zero for " + type + ".");
-        }
-        this.type = type;
-        this.capacity = capacity;
-    }
-
-    @Override
-    public String toString() {
-        return type + " (Seats: " + capacity + ")";
-    }
-}
+import java.util.HashMap;
+import java.util.Map;
 
 public class TrainManagement {
     public static void main(String[] args) {
-        System.out.println("--- Railway Data Integrity System ---");
+        // Create a HashMap to store Bogie Name (Key) and Capacity (Value)
+        // HashMap provides O(1) performance for lookups and insertions
+        Map<String, Integer> bogieCapacityMap = new HashMap<>();
 
-        // 3. TRY-CATCH: Handling the creation process safely
-        try {
-            System.out.println("Action: Attempting to add a valid Sleeper bogie...");
-            PassengerBogie s1 = new PassengerBogie("Sleeper", 72);
-            System.out.println("Success: Added " + s1);
+        System.out.println("--- Railway Operational Mapping System ---");
 
-            System.out.println("\nAction: Attempting to add an invalid AC bogie (0 capacity)...");
-            // This line will trigger the exception and jump to the catch block
-            PassengerBogie b1 = new PassengerBogie("AC Chair Car", 0);
-            System.out.println("This line will never execute.");
+        // 1. PUT: Associating bogie types with their seating/load capacities
+        bogieCapacityMap.put("Sleeper", 72);
+        bogieCapacityMap.put("AC Chair Car", 56);
+        bogieCapacityMap.put("First Class", 24);
+        bogieCapacityMap.put("General", 90);
 
-        } catch (InvalidCapacityException e) {
-            // 4. ERROR HANDLING: Gracefully reporting the business rule violation
-            System.err.println("ALERT: " + e.getMessage());
+        System.out.println("Status: Bogie-Capacity mappings registered successfully.");
+
+        // 2. ENTRYSET ITERATION: Displaying all mapped data
+        System.out.println("\n--- Current Bogie Inventory (Type : Capacity) ---");
+
+        // Iterating through entrySet() allows us to access both Key and Value efficiently
+        for (Map.Entry<String, Integer> entry : bogieCapacityMap.entrySet()) {
+            System.out.println("Bogie: " + entry.getKey() + " | Seats/Load: " + entry.getValue());
         }
 
-        try {
-            System.out.println("\nAction: Attempting to add a bogie with negative capacity...");
-            PassengerBogie f1 = new PassengerBogie("First Class", -5);
-        } catch (InvalidCapacityException e) {
-            System.err.println("ALERT: " + e.getMessage());
+        // 3. FAST LOOKUP: Retrieving capacity using a specific key
+        String searchBogie = "Sleeper";
+        if (bogieCapacityMap.containsKey(searchBogie)) {
+            int capacity = bogieCapacityMap.get(searchBogie);
+            System.out.println("\nQuery Result: The capacity for '" + searchBogie + "' is " + capacity + " units.");
         }
 
-        System.out.println("\nStatus: System remained stable despite invalid input attempts.");
+        // 4. UPDATE: Modifying an existing mapping
+        System.out.println("\nAction: Updating 'General' coach capacity due to refit...");
+        bogieCapacityMap.put("General", 100); // Overwrites the previous value of 90
+
+        System.out.println("Updated Capacity for General: " + bogieCapacityMap.get("General"));
+        System.out.println("\n--- Operational Mapping Complete ---");
     }
 }
