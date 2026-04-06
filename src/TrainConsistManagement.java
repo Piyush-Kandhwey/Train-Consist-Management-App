@@ -1,23 +1,37 @@
-// UC18: Linear Search for Bogie ID
+import java.util.Arrays;
 
-class BogieSearch {
+// UC19: Binary Search for Bogie ID
 
-    // Linear Search Method
-    public static boolean searchBogie(String[] bogieIds, String key) {
+class BogieBinarySearch {
 
-        // Traverse array sequentially
-        for (int i = 0; i < bogieIds.length; i++) {
+    public static boolean binarySearch(String[] bogieIds, String key) {
 
-            // Compare using equals()
-            if (bogieIds[i].equals(key)) {
-                return true; // Match found → stop early
+        int low = 0;
+        int high = bogieIds.length - 1;
+
+        while (low <= high) {
+
+            int mid = (low + high) / 2;
+
+            int result = key.compareTo(bogieIds[mid]);
+
+            // Match found
+            if (result == 0) {
+                return true;
+            }
+            // Search in right half
+            else if (result > 0) {
+                low = mid + 1;
+            }
+            // Search in left half
+            else {
+                high = mid - 1;
             }
         }
 
-        return false; // No match found after full traversal
+        return false; // Not found
     }
 
-    // Display result
     public static void displayResult(String key, boolean found) {
         if (found) {
             System.out.println("Bogie ID " + key + " FOUND in the consist.");
@@ -31,33 +45,43 @@ class BogieSearch {
 public class TrainConsistManagement {
     public static void main(String[] args) {
 
-        // Sample bogie IDs (unsorted)
+        // Sorted bogie IDs (IMPORTANT precondition)
         String[] bogieIds = {"BG101", "BG205", "BG309", "BG412", "BG550"};
+
+        // Optional safety: ensure sorting
+        Arrays.sort(bogieIds);
+
+        System.out.println("Sorted Bogie IDs: " + Arrays.toString(bogieIds));
+
+        System.out.println("\n---- Binary Search Tests ----");
 
         // Test Cases
 
-        System.out.println("---- Linear Search Tests ----");
-
-        // 1. Bogie Found
+        // 1. Found
         String key1 = "BG309";
-        BogieSearch.displayResult(key1, BogieSearch.searchBogie(bogieIds, key1));
+        BogieBinarySearch.displayResult(key1,
+                BogieBinarySearch.binarySearch(bogieIds, key1));
 
-        // 2. Bogie Not Found
+        // 2. Not Found
         String key2 = "BG999";
-        BogieSearch.displayResult(key2, BogieSearch.searchBogie(bogieIds, key2));
+        BogieBinarySearch.displayResult(key2,
+                BogieBinarySearch.binarySearch(bogieIds, key2));
 
-        // 3. First Element Match
+        // 3. First Element
         String key3 = "BG101";
-        BogieSearch.displayResult(key3, BogieSearch.searchBogie(bogieIds, key3));
+        BogieBinarySearch.displayResult(key3,
+                BogieBinarySearch.binarySearch(bogieIds, key3));
 
-        // 4. Last Element Match
+        // 4. Last Element
         String key4 = "BG550";
-        BogieSearch.displayResult(key4, BogieSearch.searchBogie(bogieIds, key4));
+        BogieBinarySearch.displayResult(key4,
+                BogieBinarySearch.binarySearch(bogieIds, key4));
 
-        // 5. Single Element Array
+        // 5. Single Element
         String[] single = {"BG101"};
         String key5 = "BG101";
-        BogieSearch.displayResult(key5, BogieSearch.searchBogie(single, key5));
+        BogieBinarySearch.displayResult(key5,
+                BogieBinarySearch.binarySearch(single, key5));
 
         System.out.println("\nProgram continues after search...");
     }
