@@ -1,102 +1,73 @@
-// Custom Runtime Exception
-class CargoSafetyException extends RuntimeException {
-    public CargoSafetyException(String message) {
-        super(message);
-    }
-}
+// UC16: Sort Passenger Bogie Capacities using Bubble Sort
 
-// Enum for Cargo Types
-enum CargoType {
-    COAL,
-    GRAINS,
-    PETROLEUM
-}
+class PassengerBogieSorter {
 
-// Abstract Goods Bogie
-abstract class GoodsBogie {
-    protected String bogieId;
-    protected CargoType cargo;
+    // Bubble Sort Method
+    public static void sortCapacities(int[] capacities) {
+        int n = capacities.length;
 
-    public GoodsBogie(String bogieId) {
-        this.bogieId = bogieId;
-    }
+        // Outer loop for passes
+        for (int i = 0; i < n - 1; i++) {
 
-    public abstract String getShape();
+            // Inner loop for comparisons
+            for (int j = 0; j < n - i - 1; j++) {
 
-    // UC15: Safe cargo assignment using try-catch-finally
-    public void assignCargo(CargoType cargoType) {
-        try {
-            validateCargo(cargoType);
-            this.cargo = cargoType;
-            System.out.println("Cargo " + cargoType + " assigned to " + bogieId);
-        }
-        catch (CargoSafetyException e) {
-            System.out.println("ERROR: " + e.getMessage());
-        }
-        finally {
-            System.out.println("Assignment attempt completed for " + bogieId);
+                // Compare adjacent elements
+                if (capacities[j] > capacities[j + 1]) {
+
+                    // Swap logic
+                    int temp = capacities[j];
+                    capacities[j] = capacities[j + 1];
+                    capacities[j + 1] = temp;
+                }
+            }
         }
     }
 
-    // Validation logic
-    private void validateCargo(CargoType cargoType) {
-        if (this.getShape().equalsIgnoreCase("Rectangular")
-                && cargoType == CargoType.PETROLEUM) {
-            throw new CargoSafetyException(
-                    "Unsafe cargo! Petroleum cannot be loaded into a Rectangular Bogie: " + bogieId
-            );
+    // Utility method to print array
+    public static void display(int[] capacities) {
+        for (int cap : capacities) {
+            System.out.print(cap + " ");
         }
-    }
-
-    public CargoType getCargo() {
-        return cargo;
-    }
-}
-
-// Rectangular Bogie
-class RectangularBogie extends GoodsBogie {
-    public RectangularBogie(String bogieId) {
-        super(bogieId);
-    }
-
-    @Override
-    public String getShape() {
-        return "Rectangular";
-    }
-}
-
-// Cylindrical Bogie
-class CylindricalBogie extends GoodsBogie {
-    public CylindricalBogie(String bogieId) {
-        super(bogieId);
-    }
-
-    @Override
-    public String getShape() {
-        return "Cylindrical";
+        System.out.println();
     }
 }
 
 // Main Application
-public class TrainConsistManagementApp {
+public class TrainConsistManagement {
     public static void main(String[] args) {
 
-        GoodsBogie rectBogie = new RectangularBogie("RB1");
-        GoodsBogie cylBogie = new CylindricalBogie("CB1");
+        // Sample passenger bogie capacities
+        int[] capacities = {72, 56, 24, 70, 60};
 
-        // Safe assignment
-        rectBogie.assignCargo(CargoType.COAL);
+        System.out.println("Before Sorting:");
+        PassengerBogieSorter.display(capacities);
 
-        System.out.println();
+        // Perform Bubble Sort
+        PassengerBogieSorter.sortCapacities(capacities);
 
-        // Unsafe assignment (should trigger exception)
-        rectBogie.assignCargo(CargoType.PETROLEUM);
+        System.out.println("After Sorting:");
+        PassengerBogieSorter.display(capacities);
 
-        System.out.println();
+        // Additional test scenarios
+        System.out.println("\n--- Additional Test Cases ---");
 
-        // Safe assignment
-        cylBogie.assignCargo(CargoType.PETROLEUM);
+        int[] alreadySorted = {24, 56, 60, 70, 72};
+        PassengerBogieSorter.sortCapacities(alreadySorted);
+        PassengerBogieSorter.display(alreadySorted);
 
-        System.out.println("\nProgram continues after handling exceptions...");
+        int[] duplicates = {72, 56, 56, 24};
+        PassengerBogieSorter.sortCapacities(duplicates);
+        PassengerBogieSorter.display(duplicates);
+
+        int[] single = {50};
+        PassengerBogieSorter.sortCapacities(single);
+        PassengerBogieSorter.display(single);
+
+        int[] allEqual = {40, 40, 40};
+        PassengerBogieSorter.sortCapacities(allEqual);
+        PassengerBogieSorter.display(allEqual);
+
+        System.out.println("\nProgram continues after sorting...");
     }
 }
