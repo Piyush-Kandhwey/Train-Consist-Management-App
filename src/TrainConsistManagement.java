@@ -1,35 +1,16 @@
-// UC16: Sort Passenger Bogie Capacities using Bubble Sort
+import java.util.Arrays;
 
-class PassengerBogieSorter {
+// UC17: Sort Bogie Names using Arrays.sort()
 
-    // Bubble Sort Method
-    public static void sortCapacities(int[] capacities) {
-        int n = capacities.length;
+class BogieNameSorter {
 
-        // Outer loop for passes
-        for (int i = 0; i < n - 1; i++) {
-
-            // Inner loop for comparisons
-            for (int j = 0; j < n - i - 1; j++) {
-
-                // Compare adjacent elements
-                if (capacities[j] > capacities[j + 1]) {
-
-                    // Swap logic
-                    int temp = capacities[j];
-                    capacities[j] = capacities[j + 1];
-                    capacities[j + 1] = temp;
-                }
-            }
-        }
+    public static void sortBogieNames(String[] bogieNames) {
+        // Built-in sorting (Dual-Pivot QuickSort / TimSort internally)
+        Arrays.sort(bogieNames);
     }
 
-    // Utility method to print array
-    public static void display(int[] capacities) {
-        for (int cap : capacities) {
-            System.out.print(cap + " ");
-        }
-        System.out.println();
+    public static void display(String[] bogieNames) {
+        System.out.println(Arrays.toString(bogieNames));
     }
 }
 
@@ -37,36 +18,36 @@ class PassengerBogieSorter {
 public class TrainConsistManagement {
     public static void main(String[] args) {
 
-        // Sample passenger bogie capacities
-        int[] capacities = {72, 56, 24, 70, 60};
+        // Sample bogie names
+        String[] bogieNames = {"Sleeper", "AC Chair", "First Class", "General", "Luxury"};
 
         System.out.println("Before Sorting:");
-        PassengerBogieSorter.display(capacities);
+        BogieNameSorter.display(bogieNames);
 
-        // Perform Bubble Sort
-        PassengerBogieSorter.sortCapacities(capacities);
+        // Sorting using Arrays.sort()
+        BogieNameSorter.sortBogieNames(bogieNames);
 
         System.out.println("After Sorting:");
-        PassengerBogieSorter.display(capacities);
+        BogieNameSorter.display(bogieNames);
 
-        // Additional test scenarios
+        // Additional test cases
         System.out.println("\n--- Additional Test Cases ---");
 
-        int[] alreadySorted = {24, 56, 60, 70, 72};
-        PassengerBogieSorter.sortCapacities(alreadySorted);
-        PassengerBogieSorter.display(alreadySorted);
+        String[] unsorted = {"Luxury", "General", "Sleeper", "AC Chair"};
+        BogieNameSorter.sortBogieNames(unsorted);
+        BogieNameSorter.display(unsorted);
 
-        int[] duplicates = {72, 56, 56, 24};
-        PassengerBogieSorter.sortCapacities(duplicates);
-        PassengerBogieSorter.display(duplicates);
+        String[] alreadySorted = {"AC Chair", "First Class", "General"};
+        BogieNameSorter.sortBogieNames(alreadySorted);
+        BogieNameSorter.display(alreadySorted);
 
-        int[] single = {50};
-        PassengerBogieSorter.sortCapacities(single);
-        PassengerBogieSorter.display(single);
+        String[] duplicates = {"Sleeper", "AC Chair", "Sleeper", "General"};
+        BogieNameSorter.sortBogieNames(duplicates);
+        BogieNameSorter.display(duplicates);
 
-        int[] allEqual = {40, 40, 40};
-        PassengerBogieSorter.sortCapacities(allEqual);
-        PassengerBogieSorter.display(allEqual);
+        String[] single = {"Sleeper"};
+        BogieNameSorter.sortBogieNames(single);
+        BogieNameSorter.display(single);
 
         System.out.println("\nProgram continues after sorting...");
     }
